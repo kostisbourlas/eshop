@@ -1,0 +1,6 @@
+django~=2.2
+sqlparse
+pytz
+django-debug-toolbar
+python-decouple
+django-allauth
