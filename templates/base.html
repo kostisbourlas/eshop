@@ -15,6 +15,7 @@
   <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
   <!-- Your custom styles (optional) -->
   <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}">
   <style type="text/css">
     html,
     body,
@@ -47,9 +48,18 @@
 </head>
 <body>
 
+{% include 'navbar.html' %}
+
 {% block content %}
+
 {% endblock %}
 
+    </div>
+  </main>
+    <!--Footer-->
+  {% include 'footer.html' %}
+
+  <script src="{% static 'js/flashMessageTimeout.js' %}"></script>
   <!-- SCRIPTS -->
   <!-- JQuery -->
   <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>

@@ -1,0 +1,11 @@
+<!-- Display Flash Messages after an action -->
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert" id="flash_message" {% if message.tags %} {% endif %}>
+        <span class="message-message">{{ message }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
