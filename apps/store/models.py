@@ -52,6 +52,24 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
+    def get_total_item_price(self):
+        return self.quantity * self.item.price
+
+    def get_total_item_discount_price(self):
+        return self.quantity * self.item.discount_price
+
+    def get_amount_saved_by_discount(self):
+        return self.get_total_item_price() - self.get_total_item_discount_price()
+
+    def get_final_price(self):
+        """
+        Return between Price and Discount Price
+        :return: FloatField
+        """
+        if self.item.discount_price:
+            return self.get_total_item_discount_price()
+        return self.get_total_item_price()
+
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -62,3 +80,13 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def get_total_cost_order(self):
+        """
+        Calculate the total amount a customer is going to pay
+        :return: FloatField
+        """
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_final_price()
+        return total

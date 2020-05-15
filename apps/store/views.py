@@ -1,7 +1,10 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView, View
 
-from apps.store.models import Item, OrderItem, Order
+from apps.store.models import Item, Order
 
 
 class HomeView(ListView):
@@ -15,6 +18,20 @@ class ItemDetailView(DetailView):
     template_name = 'store/product.html'
 
 
+class OrderSummaryView(LoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            context = {
+                'object': order
+            }
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active order")
+            return redirect("/")
+
+        return render(self.request, 'store/order_summary.html', context)
+
+
 def products(request):
     context = {
         'items': Item.objects.all()
@@ -24,5 +41,3 @@ def products(request):
 
 def checkout(request):
     return render(request, "checkout.html")
-
-
