@@ -1,6 +1,7 @@
 from django.urls import path
 
-from apps.store.views import HomeView, ItemDetailView, add_to_cart, remove_from_cart
+from apps.store.services import add_to_cart, remove_from_cart
+from apps.store.views import HomeView, ItemDetailView
 
 app_name = 'store'
 

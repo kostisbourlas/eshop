@@ -6,8 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
-  <!-- Font Awesome -->
+ <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <!-- Bootstrap core CSS -->
   <link href="{% static 'css/bootstrap.min.css' %} " rel="stylesheet">
@@ -48,16 +49,27 @@
 </head>
 <body>
 
-{% include 'navbar.html' %}
-
+{% include 'layout/navbar.html' %}
+    <div class="mt-5 pt-4">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" id="flash_message">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
 {% block content %}
-
 {% endblock %}
 
-    </div>
-  </main>
-    <!--Footer-->
-  {% include 'footer.html' %}
+{% block extra_body %}
+{% endblock %}
+
+<!--Footer-->
+  {% include 'layout/footer.html' %}
 
   <script src="{% static 'js/flashMessageTimeout.js' %}"></script>
   <!-- SCRIPTS -->
