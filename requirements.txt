@@ -5,3 +5,4 @@ django-debug-toolbar
 python-decouple
 django-allauth
 django-crispy-forms
+django-countries
