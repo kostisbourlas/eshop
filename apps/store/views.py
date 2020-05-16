@@ -82,3 +82,7 @@ class CheckoutView(View):
 
         return redirect("store:checkout")
 
+
+class PaymentView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, "store/payment.html")
