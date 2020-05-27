@@ -1,18 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 
-from apps.store.models import Item, OrderItem, Order
+from apps.store.models import Item, OrderItem, Order, Coupon
+from apps.store.forms import CouponForm
 
 
 @login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(item=item,
-                                                 user=request.user,
-                                                 ordered=False)
+                                                          user=request.user,
+                                                          ordered=False)
     order_qs = Order.objects.filter(user=request.user, ordered=False)
 
     if order_qs.exists():
@@ -91,3 +93,33 @@ def decrease_quantity_from_cart(request, slug):
     else:
         messages.info(request, "You do not have an active order.")
         return redirect("store:product", slug=slug)
+
+
+def get_coupon(request, code):
+    try:
+        coupon = Coupon.objects.get(code=code)
+    except ObjectDoesNotExist:
+        messages.info(request, "This coupon does not exist")
+        return redirect("store:checkout")
+
+    return coupon
+
+
+def add_coupon(request):
+    if request.method == "POST":
+        form = CouponForm(request.POST or None)
+        if form.is_valid():
+            try:
+                code = form.cleaned_data.get('code')
+                order = Order.objects.get(user=request.user, ordered=False)
+                order.coupon = get_coupon(request, code)
+                order.save()
+
+                messages.success(request, "Successfully added coupon")
+
+            except ObjectDoesNotExist:
+                messages.info(request, "You do not have an active order")
+
+            return redirect("store:checkout")
+    # TODO: Raise Error
+    return None
